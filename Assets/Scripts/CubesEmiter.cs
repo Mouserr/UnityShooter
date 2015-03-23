@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
+using Assets.Helpers;
+using Random = UnityEngine.Random;
 
 public class CubesEmiter : MonoBehaviour {
 
     [SerializeField]
-    private GameObject prefab;
+    private Vulnerable prefab;
 
     [SerializeField]
     private float startY;
@@ -24,9 +27,13 @@ public class CubesEmiter : MonoBehaviour {
 
     private float delay;
 
+    private GameObjectPull<Vulnerable> cubesPull; 
+
+
 	// Use this for initialization
-	void Start () {
-	
+	void Start ()
+	{
+        cubesPull = new GameObjectPull<Vulnerable>(gameObject.AddChild("CubesPull"), prefab, 50, 10);
 	}
 	
 	// Update is called once per frame
@@ -36,18 +43,28 @@ public class CubesEmiter : MonoBehaviour {
         if (delay >= emitionDelay)
         {
             delay = 0;
-            GameObject cube = CreateCube();
+            Vulnerable cube = CreateCube();
         }
 	}
 
-    private GameObject CreateCube()
+    private Vulnerable CreateCube()
     {
-        GameObject cube = Instantiate(prefab,
-           new Vector3(Random.RandomRange(minX, maxX), startY, Random.RandomRange(minZ, maxZ)),
-           Quaternion.identity) as GameObject;
+        Vulnerable cube = cubesPull.GetObject();
 
         cube.transform.parent = transform;
         cube.transform.localScale = Vector3.one;
+        cube.transform.localPosition = new Vector3(Random.Range(minX, maxX), startY,
+            Random.Range(minZ, maxZ));
+        cube.OnHit += onHit;
+
+        cube.gameObject.SetActive(true);
         return cube;
+    }
+
+    private void onHit(Vulnerable vulnerable)
+    {
+        cubesPull.ReleaseObject(vulnerable);
+        if (vulnerable.OnHit != null)
+            vulnerable.OnHit -= onHit;  
     }
 }

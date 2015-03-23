@@ -3,6 +3,10 @@ using System.Collections;
 
 public class Vulnerable : MonoBehaviour
 {
+    public delegate void HitDelegate(Vulnerable vulnerable);
+
+    public HitDelegate OnHit = (v) => {};
+
 
     void OnCollisionEnter(Collision collision)
     {
