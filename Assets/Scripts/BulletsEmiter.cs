@@ -27,9 +27,10 @@ public class BulletsEmiter : MonoBehaviour {
     {
           if (Input.GetMouseButtonUp(0))
           {
-              Ray ray = camera.ScreenPointToRay( Input.mousePosition);
+              Vector3 dir = camera.transform.TransformDirection(Vector3.forward);
               Bullet bullet = CreateBullet();
-              bullet.rigidbody.AddForce(ray.direction * 100, ForceMode.Impulse);
+              bullet.transform.localPosition = camera.transform.localPosition + Vector3.forward*camera.nearClipPlane;
+              bullet.rigidbody.AddForce(dir * 50, ForceMode.Impulse);
           }
 	}
 
@@ -38,8 +39,7 @@ public class BulletsEmiter : MonoBehaviour {
         Bullet bullet = bulletsPull.GetObject();
 
         bullet.transform.parent = transform;
-        bullet.transform.localScale = Vector3.one;
-        bullet.transform.localPosition = camera.transform.localPosition;
+        bullet.transform.localScale = prefab.transform.localScale;
         bullet.OnHit += onHit;
         bullet.gameObject.SetActive(true);
         return bullet;
