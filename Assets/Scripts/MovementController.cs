@@ -4,40 +4,31 @@ using System.Collections;
 public class MovementController : MonoBehaviour
 {
 
-    private const float sideSpeed = 0.1f;
-    private const float forwardSpeed = 0.3f;
-
-    private Vector3 prevMousePosition = new Vector3(0,0,0);
-    private void OnEnable()
-    {
-        prevMousePosition = Input.mousePosition;
-    }
+    private const float sideSpeed = 0.2f;
+    private const float forwardSpeed = 0.2f;
 
     private void Update()
     {
         if (Input.GetKey(KeyCode.A))
         {
-            transform.localPosition += new Vector3(-sideSpeed, 0, 0);
+            Vector3 delta = transform.localRotation * new Vector3(-sideSpeed, 0, 0);
+            transform.localPosition += new Vector3(delta.x, 0, delta.z);
         }
         if (Input.GetKey(KeyCode.W))
         {
-            transform.localPosition += new Vector3(0, 0, forwardSpeed);
+            Vector3 delta = transform.localRotation * new Vector3(0, 0, forwardSpeed);
+            transform.localPosition += new Vector3(delta.x, 0, delta.z);
         }
         if (Input.GetKey(KeyCode.D))
         {
-            transform.localPosition += new Vector3(sideSpeed, 0, 0);
+            Vector3 delta = transform.localRotation * new Vector3(sideSpeed, 0, 0);
+            transform.localPosition += new Vector3(delta.x, 0, delta.z);
         }
         if (Input.GetKey(KeyCode.S))
         {
-            transform.localPosition += new Vector3(0, 0, -forwardSpeed);
+            Vector3 delta = transform.localRotation * new Vector3(0, 0, -forwardSpeed);
+            transform.localPosition += new Vector3(delta.x, 0, delta.z);
         }
-
-        // to velocity
-        Vector3 delta = Input.mousePosition - prevMousePosition;
-        transform.Rotate(Vector3.up, delta.x * Mathf.PI / Screen.width);
-        transform.Rotate(Vector3.right, -delta.y * Mathf.PI / Screen.height);
-        prevMousePosition = Input.mousePosition;
-
     }
 
 }
