@@ -6,6 +6,8 @@ public class BulletsEmiter : MonoBehaviour {
 
     [SerializeField]
     private Bullet prefab;
+    [SerializeField]
+    private float speed;
 
     [SerializeField]
     private ParticleSystem explosionPrefab;
@@ -25,12 +27,12 @@ public class BulletsEmiter : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
-          if (Input.GetMouseButtonUp(0))
+          if (Input.GetMouseButtonUp(0) || Input.GetKeyUp(KeyCode.Space))
           {
               Vector3 dir = camera.transform.TransformDirection(Vector3.forward);
               Bullet bullet = CreateBullet();
               bullet.transform.localPosition = camera.transform.localPosition + Vector3.forward*camera.nearClipPlane;
-              bullet.rigidbody.AddForce(dir * 50, ForceMode.Impulse);
+              bullet.GetComponent<Rigidbody>().AddForce(dir * speed, ForceMode.Impulse);
           }
 	}
 
@@ -49,7 +51,7 @@ public class BulletsEmiter : MonoBehaviour {
     {
         StartCoroutine(effectCoroutine(effectsPull.GetObject(), position));
         bullet.OnHit -= onHit;
-        bullet.rigidbody.velocity = Vector3.zero;
+        bullet.GetComponent<Rigidbody>().velocity = Vector3.zero;
         bulletsPull.ReleaseObject(bullet);
     }
 
